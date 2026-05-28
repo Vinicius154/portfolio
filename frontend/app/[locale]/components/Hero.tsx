@@ -1,10 +1,20 @@
 "use client";
 
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useTime,
+  AnimatePresence,
+} from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import { Github, Linkedin, Mail, ArrowDown } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Typewriter from "./Typewriter";
+import HeroParticles from "./HeroParticles";
+import ScrambleText from "./ScrambleText";
+
+const EASE = [0.16, 1, 0.3, 1] as const;
 
 export default function Hero() {
   const t = useTranslations("Hero");
@@ -24,45 +34,90 @@ export default function Hero() {
     return () => clearInterval(id);
   }, []);
 
+  // Órbita elíptica dos badges ao redor da foto — período de 14s
+  const tempo = useTime();
+  const rx = 205; // raio horizontal
+  const ry = 165; // raio vertical
+
+  // Badge de stack — inicia na posição inferior-esquerda (~210°)
+  const a1 = useTransform(
+    tempo,
+    (t) => (t / 14000) * Math.PI * 2 + Math.PI * 1.15,
+  );
+  const ox1 = useTransform(a1, (a) => Math.cos(a) * rx);
+  const oy1 = useTransform(a1, (a) => Math.sin(a) * ry);
+
+  // Badge de anos — inicia na posição superior-direita (~30°), fase oposta
+  const a2 = useTransform(
+    tempo,
+    (t) => (t / 14000) * Math.PI * 2 + Math.PI * 0.15,
+  );
+  const ox2 = useTransform(a2, (a) => Math.cos(a) * rx);
+  const oy2 = useTransform(a2, (a) => Math.sin(a) * ry);
+
   return (
     <section
       ref={ref}
       id="top"
       className="relative flex min-h-[100svh] items-center overflow-hidden pt-28 pb-24"
     >
+      {/* Constelação de partículas interativas */}
+      <HeroParticles />
+
+      {/* Varredura luminosa de entrada — dispara uma vez */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute inset-y-0 w-[280px]"
+        style={{
+          background:
+            "linear-gradient(90deg, transparent 0%, rgba(59,130,246,0.10) 50%, transparent 100%)",
+          filter: "blur(12px)",
+        }}
+        initial={{ x: "-40vw", opacity: 0 }}
+        animate={{ x: "130vw", opacity: [0, 1, 1, 0] }}
+        transition={{ duration: 1.4, delay: 1.5, ease: "easeInOut" }}
+      />
+
       <motion.div
         style={{ y, opacity, scale }}
         className="container-x grid items-center gap-12 md:grid-cols-[1.1fr_0.9fr]"
       >
+        {/* ── Coluna esquerda ── */}
         <div className="relative">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.7, ease: EASE }}
             className="eyebrow"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-royal-400 animate-pulse-slow" />
             {t("available")}
           </motion.div>
 
+          {/* Nome com efeito de scramble */}
           <motion.h1
             initial={{ opacity: 0, y: 32 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.8, delay: 0.05, ease: EASE }}
             className="heading-xl mt-5"
           >
-            {t("name1")}
+            <ScrambleText delayMs={1600} duracao={800}>
+              {t("name1")}
+            </ScrambleText>
             <br />
-            {t("name2")}
+            <ScrambleText delayMs={1900} duracao={900}>
+              {t("name2")}
+            </ScrambleText>
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.8, delay: 0.15, ease: EASE }}
             className="mt-6 max-w-xl text-base md:text-lg leading-relaxed text-ink-muted"
           >
-            {t("descPart1")}{t("descPart1") && " "}
+            {t("descPart1")}
+            {t("descPart1") && " "}
             <Typewriter words={[t("roleFullStack"), t("roleData")]} />{" "}
             {t("descPart2")}
           </motion.p>
@@ -70,7 +125,7 @@ export default function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.8, delay: 0.25, ease: EASE }}
             className="mt-8 flex flex-wrap items-center gap-3"
           >
             <a href="#contato" className="btn-primary">
@@ -114,13 +169,72 @@ export default function Hero() {
           </motion.div>
         </div>
 
+        {/* ── Coluna direita — foto com anéis orbitais ── */}
         <motion.div
           initial={{ opacity: 0, scale: 0.92 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1, delay: 0.1, ease: EASE }}
           className="relative mx-auto"
         >
           <div className="relative">
+            {/* Anel orbital externo — rotação lenta */}
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+              className="absolute inset-0 m-auto"
+              style={{
+                width: "calc(100% + 52px)",
+                height: "calc(100% + 52px)",
+                top: "-26px",
+                left: "-26px",
+                borderRadius: "50%",
+                border: "1px solid transparent",
+                borderTopColor: "rgba(59,130,246,0.35)",
+                borderRightColor: "rgba(59,130,246,0.12)",
+                borderBottomColor: "rgba(59,130,246,0.06)",
+              }}
+            />
+
+            {/* Anel orbital interno — rotação inversa mais rápida */}
+            <motion.div
+              animate={{ rotate: -360 }}
+              transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+              className="absolute inset-0 m-auto"
+              style={{
+                width: "calc(100% + 24px)",
+                height: "calc(100% + 24px)",
+                top: "-12px",
+                left: "-12px",
+                borderRadius: "50%",
+                border: "1px dashed rgba(99,102,241,0.22)",
+              }}
+            />
+
+            {/* Ponto orbital no anel externo */}
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+              className="absolute"
+              style={{
+                width: "calc(100% + 52px)",
+                height: "calc(100% + 52px)",
+                top: "-26px",
+                left: "-26px",
+                borderRadius: "50%",
+              }}
+            >
+              <div
+                className="absolute h-2 w-2 rounded-full bg-royal-400"
+                style={{
+                  top: "0%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  boxShadow: "0 0 8px 2px rgba(96,165,250,0.7)",
+                }}
+              />
+            </motion.div>
+
+            {/* Foto */}
             <div className="photo-ring relative h-[280px] w-[280px] md:h-[360px] md:w-[360px] overflow-hidden rounded-full border border-white/10 bg-bg-card shadow-glow-strong">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -129,18 +243,26 @@ export default function Hero() {
                 className="h-full w-full object-cover"
               />
             </div>
-            {/* Badge esquerdo */}
+
+            {/* Badge de stack — orbita ao redor da foto */}
             <motion.div
-              animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -left-6 top-10 glass-strong px-3 py-2 text-[11px] font-medium text-white overflow-hidden min-w-[120px]"
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                x: ox1,
+                y: oy1,
+                marginLeft: "-60px",
+                marginTop: "-20px",
+              }}
+              className="glass-strong px-3 py-2 text-[11px] font-medium text-white overflow-hidden min-w-[120px]"
             >
               <AnimatePresence mode="wait">
                 <motion.span
-                  key={`left-${badgeIdx}`}
-                  initial={{ opacity: 0, y: 8 }}
+                  key={`stack-${badgeIdx}`}
+                  initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
+                  exit={{ opacity: 0, y: -6 }}
                   transition={{ duration: 0.4, ease: "easeInOut" }}
                   className="flex items-center gap-1.5"
                 >
@@ -150,18 +272,25 @@ export default function Hero() {
               </AnimatePresence>
             </motion.div>
 
-            {/* Badge direito */}
+            {/* Badge de anos — orbita no lado oposto */}
             <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -right-4 bottom-10 glass-strong px-3 py-2 text-[11px] font-medium text-white overflow-hidden min-w-[90px]"
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                x: ox2,
+                y: oy2,
+                marginLeft: "-45px",
+                marginTop: "-20px",
+              }}
+              className="glass-strong px-3 py-2 text-[11px] font-medium text-white overflow-hidden min-w-[90px]"
             >
               <AnimatePresence mode="wait">
                 <motion.span
-                  key={`right-${badgeIdx}`}
-                  initial={{ opacity: 0, y: 8 }}
+                  key={`anos-${badgeIdx}`}
+                  initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
+                  exit={{ opacity: 0, y: -6 }}
                   transition={{ duration: 0.4, ease: "easeInOut" }}
                   className="flex items-center gap-1.5"
                 >
@@ -174,6 +303,7 @@ export default function Hero() {
         </motion.div>
       </motion.div>
 
+      {/* Indicador de scroll */}
       <motion.a
         href="#sobre"
         initial={{ opacity: 0 }}
