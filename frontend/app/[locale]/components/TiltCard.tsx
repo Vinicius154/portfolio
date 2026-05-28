@@ -18,7 +18,7 @@ export function TiltCard({ children, className = "", intensity = 7 }: Props) {
     const el = ref.current;
     if (!el) return;
     const { left, top, width, height } = el.getBoundingClientRect();
-    const x = (e.clientX - left) / width - 0.5;   // -0.5 → 0.5
+    const x = (e.clientX - left) / width - 0.5;   // normalizado de -0.5 a 0.5
     const y = (e.clientY - top) / height - 0.5;
     el.style.transform = `perspective(900px) rotateX(${-y * intensity}deg) rotateY(${x * intensity}deg) scale3d(1.02,1.02,1.02)`;
   };

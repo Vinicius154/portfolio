@@ -99,7 +99,7 @@ export default function Stack() {
               <TiltCard
                 className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br ${cat.tone} p-6 transition-shadow duration-500 hover:shadow-glow h-full`}
               >
-                {/* Shimmer hover */}
+                {/* Brilho deslizante no hover */}
                 <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                   <div className="absolute -inset-x-1/2 -top-1/2 h-[200%] w-[200%] rotate-12 bg-gradient-to-r from-transparent via-royal-400/10 to-transparent animate-shimmer" />
                 </div>

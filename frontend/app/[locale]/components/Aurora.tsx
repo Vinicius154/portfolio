@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 export default function Aurora() {
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      {/* Glow 1 — azul royal pulsando */}
+      {/* Brilho 1 — azul royal pulsando */}
       <motion.div
         aria-hidden
         className="absolute -top-1/3 -left-1/4 h-[80vh] w-[80vh] rounded-full"
@@ -25,7 +25,7 @@ export default function Aurora() {
         }}
         transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
       />
-      {/* Glow 2 — accent */}
+      {/* Brilho 2 — azul de destaque */}
       <motion.div
         aria-hidden
         className="absolute top-1/4 -right-1/4 h-[70vh] w-[70vh] rounded-full"
