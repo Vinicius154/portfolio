@@ -1,7 +1,7 @@
 {
   "Meta": {
-    "title": "Vinicius Belchior — Full Stack Developer",
-    "description": "Portfolio of Vinicius Belchior — Full Stack Developer & Data Analyst. Python, Django, React, Next.js, TypeScript."
+    "title": "Vinicius Belchior — Software Engineer",
+    "description": "Portfolio of Vinicius Belchior — Software Engineer & Data Analyst. Python, Django, React, Next.js, TypeScript."
   },
   "Nav": {
     "about": "About",
@@ -23,7 +23,7 @@
     "name1": "Vinicius",
     "name2": "Belchior.",
     "descPart1": "",
-    "roleFullStack": "Full Stack Developer",
+    "roleFullStack": "Software Engineer",
     "and": "and",
     "roleData": "Data Analyst",
     "descPart2": "I build scalable platforms, smart automations and products with real business impact in high-complexity environments.",
@@ -33,7 +33,9 @@
     "company": "Paschoalotto · Remote",
     "scrollCue": "scroll",
     "badgeStack": "TypeScript · Python",
-    "badgeYears": "3+ years"
+    "badgeYears": "3+ years",
+    "badgeStack2": "R · Cloud",
+    "badgeYears2": "2+ years"
   },
   "About": {
     "eyebrow": "About me",
@@ -75,7 +77,7 @@
     "headingPart1": "A path of",
     "headingHighlight": "constant evolution",
     "headingPart2": ".",
-    "role1Title": "Full Stack Developer III",
+    "role1Title": "Software Engineer III",
     "role1Period": "Dec 2025 — present",
     "role1Location": "Paschoalotto · Remote",
     "role1B1": "Full Stack solutions with Python (Django) and React/Next.js focused on automation and integration — estimated impact of R$ 2M per year.",
@@ -142,24 +144,24 @@
     "altImg2": "Vinicius holding the CHD-04 rocket outdoors"
   },
   "Contact": {
-    "eyebrow": "Let's talk",
-    "headingPart1": "Got a project in mind?",
-    "headingHighlight": "Send a message",
+    "eyebrow": "Opportunities",
+    "headingPart1": "Open to new",
+    "headingHighlight": "opportunities",
     "headingPart2": ".",
-    "subheading": "I usually reply within a few hours on business days.",
+    "subheading": "Available for CLT or contractor positions. I reply within a few hours on business days.",
     "labelEmail": "Email",
     "labelPhone": "Phone",
     "labelLocation": "Location",
     "valueLocation": "Bauru — SP, Brazil",
     "otherChannels": "Prefer another channel? I'm also on",
     "fieldName": "Name *",
-    "fieldNamePh": "Your name",
+    "fieldNamePh": "Your name / company",
     "fieldEmail": "Email *",
-    "fieldEmailPh": "you@company.com",
+    "fieldEmailPh": "hr@company.com",
     "fieldSubject": "Subject",
-    "fieldSubjectPh": "How can I help you?",
+    "fieldSubjectPh": "e.g.: Senior Software Engineer position",
     "fieldMessage": "Message *",
-    "fieldMessagePh": "Tell me a bit about the project, deadlines, expectations…",
+    "fieldMessagePh": "Tell me about the role, stack, work arrangement and expectations…",
     "btnSend": "Send message",
     "btnSending": "Sending…",
     "success": "Message sent — thank you!",

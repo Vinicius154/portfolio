@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { useRef, useState, useEffect } from "react";
 import { Github, Linkedin, Mail, ArrowDown } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Typewriter from "./Typewriter";
@@ -17,6 +17,12 @@ export default function Hero() {
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 1], [1, 0.92]);
+
+  const [badgeIdx, setBadgeIdx] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setBadgeIdx((i) => (i + 1) % 2), 5000);
+    return () => clearInterval(id);
+  }, []);
 
   return (
     <section
@@ -123,21 +129,46 @@ export default function Hero() {
                 className="h-full w-full object-cover"
               />
             </div>
+            {/* Badge esquerdo */}
             <motion.div
               animate={{ y: [0, -8, 0] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -left-6 top-10 glass-strong px-3 py-2 text-[11px] font-medium text-white"
+              className="absolute -left-6 top-10 glass-strong px-3 py-2 text-[11px] font-medium text-white overflow-hidden min-w-[120px]"
             >
-              <span className="font-mono text-royal-300">{`</>`}</span>{" "}
-              {t("badgeStack")}
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={`left-${badgeIdx}`}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.4, ease: "easeInOut" }}
+                  className="flex items-center gap-1.5"
+                >
+                  <span className="font-mono text-royal-300">{`</>`}</span>
+                  {badgeIdx === 0 ? t("badgeStack") : t("badgeStack2")}
+                </motion.span>
+              </AnimatePresence>
             </motion.div>
+
+            {/* Badge direito */}
             <motion.div
               animate={{ y: [0, 8, 0] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -right-4 bottom-10 glass-strong px-3 py-2 text-[11px] font-medium text-white"
+              className="absolute -right-4 bottom-10 glass-strong px-3 py-2 text-[11px] font-medium text-white overflow-hidden min-w-[90px]"
             >
-              <span className="font-mono text-royal-300">@</span>{" "}
-              {t("badgeYears")}
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={`right-${badgeIdx}`}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.4, ease: "easeInOut" }}
+                  className="flex items-center gap-1.5"
+                >
+                  <span className="font-mono text-royal-300">@</span>
+                  {badgeIdx === 0 ? t("badgeYears") : t("badgeYears2")}
+                </motion.span>
+              </AnimatePresence>
             </motion.div>
           </div>
         </motion.div>
