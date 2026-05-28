@@ -6,8 +6,8 @@ Monorepo dividido em duas aplicações independentes:
 
 ```
 portfolio/
-├── frontend/     Next.js 14 (App Router) · TypeScript · TailwindCSS · Framer Motion
-└── backend/      FastAPI · Pydantic · SMTP (formulário de contato)
+├── frontend/   Next.js 14 · TypeScript · TailwindCSS · Framer Motion · next-intl
+└── backend/    FastAPI · Pydantic v2 · Resend (formulário de contato)
 ```
 
 ---
@@ -18,126 +18,118 @@ portfolio/
 - Next.js 14 (App Router, RSC)
 - TypeScript
 - TailwindCSS
-- Framer Motion (animações on-scroll, parallax sutil, reveals)
+- Framer Motion — cursor spotlight, typewriter, tilt 3D, contadores animados, blur reveals, parallax
+- next-intl — internacionalização PT/EN
 - Lucide Icons
 
 **Backend**
-- Python 3.12
+- Python 3.12+
 - FastAPI + Pydantic v2
-- SMTP (Gmail / qualquer provedor compatível)
+- Resend — envio de e-mail via API HTTP (sem SMTP)
 - Docker pronto para deploy
+
+---
+
+## Funcionalidades
+
+- Suporte completo a **PT / EN** via next-intl com detecção de rota
+- **Cursor spotlight** — glow suave que segue o mouse
+- **Typewriter** no Hero — roles alternando com cursor piscando
+- **Tilt 3D** nos cards de Stack e Experience
+- **Contadores animados** nas estatísticas do About
+- **Blur reveal** nas seções ao rolar
+- **Slideshow automático** na seção de Achievements (troca a cada 3s)
+- **Barra de progresso** de scroll no topo
+- Aurora animada no fundo
+- Formulário de contato com validação client-side e envio via Resend
 
 ---
 
 ## Identidade visual
 
 - **Cor principal:** Azul royal escuro (`#1E40AF`)
-- **Acentos:** tons de azul vibrante (`#3B82F6`, `#6366F1`)
-- **Estética:** minimalista, dark-first, com aurora animada no fundo, grid sutil e tipografia *Space Grotesk* para títulos / *Inter* para corpo.
-- **Movimento:** smooth scroll nativo, barra de progresso de scroll, reveals com `whileInView`, parallax leve no hero, badges flutuantes e glow conic na foto.
+- **Acentos:** `#3B82F6`, `#6366F1`
+- **Estética:** dark-first, glass morphism, tipografia *Space Grotesk* (títulos) / *Inter* (corpo) / *JetBrains Mono* (código)
 
 ---
 
 ## Como rodar localmente
 
-### 1) Frontend
+### Frontend
 
-**Windows (PowerShell ou CMD):**
-```bat
+```powershell
 cd frontend
-copy .env.example .env.local
-npm install
-npm run dev
-```
-
-**Linux/macOS:**
-```bash
-cd frontend
-cp .env.example .env.local
 npm install
 npm run dev
 ```
 Acesse `http://localhost:3000`.
 
-### 2) Backend
-
-**Recomendado: Python 3.12 ou 3.13** (3.14 funciona, mas pode exigir build via Rust se faltar wheel).
-
-**Windows (CMD):**
-```bat
-cd backend
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
-copy .env.example .env
-:: Edite .env com SMTP_USER e SMTP_PASSWORD (App Password do Gmail)
-python main.py
+Para configurar a URL do backend, crie `frontend/.env.local`:
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
-**Windows (PowerShell):**
+### Backend
+
 ```powershell
 cd backend
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 Copy-Item .env.example .env
+# Edite .env com sua RESEND_API_KEY
 python main.py
 ```
 
-**Linux/macOS:**
-```bash
-cd backend
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env
-python main.py
-```
 API em `http://localhost:8000` — docs interativos em `/docs`.
 
 ---
 
 ## Deploy
 
-| Camada    | Sugestão                                |
-|-----------|------------------------------------------|
-| Frontend  | Vercel (zero config) / Netlify           |
-| Backend   | Render / Railway / Fly.io / Azure App Service (Dockerfile incluso) |
+| Camada   | Plataforma recomendada                       |
+|----------|----------------------------------------------|
+| Frontend | **Vercel** (zero config para Next.js)        |
+| Backend  | **Render** (free tier, suporte a Python)     |
 
-Após publicar o backend, defina `NEXT_PUBLIC_API_URL` no frontend para a URL pública dele.
+### Passos rápidos
+
+**Backend (Render):**
+1. New Web Service → conecta o repositório → Root Directory: `backend`
+2. Build: `pip install -r requirements.txt`
+3. Start: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+4. Adiciona as variáveis: `RESEND_API_KEY`, `MAIL_FROM`, `MAIL_TO`, `ALLOWED_ORIGINS`
+
+**Frontend (Vercel):**
+1. New Project → importa o repositório → Root Directory: `frontend`
+2. Adiciona a variável: `NEXT_PUBLIC_API_URL=https://sua-api.onrender.com`
+
+Após o deploy, atualize `ALLOWED_ORIGINS` no Render com a URL do Vercel.
 
 ---
 
 ## Troubleshooting
 
-### Frontend — `Cannot find module './lib/stringify'` no braces
+**`hasLocale is not exported from 'next-intl'`**
+Instalação corrompida do next-intl. O projeto já usa `.includes()` como substituto — não é necessário nenhuma ação.
 
-`node_modules` corrompido (geralmente após mesclar instalações antigas). Limpe e reinstale:
-
-**Windows (CMD):**
-```bat
+**Frontend — node_modules corrompido**
+```powershell
 cd frontend
-rmdir /s /q node_modules
-del package-lock.json
-npm install
-```
-**Linux/macOS:**
-```bash
-cd frontend
-rm -rf node_modules package-lock.json
+Remove-Item -Recurse -Force node_modules
+Remove-Item package-lock.json
 npm install
 ```
 
-### Backend — falha ao compilar `pydantic-core` no Python 3.14
+**Backend — falha ao compilar `pydantic-core` no Python 3.14**
+Use Python 3.12 ou 3.13. Se precisar do 3.14:
+```powershell
+$env:PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1
+pip install -r requirements.txt
+```
 
-`pydantic-core 2.23` (PyO3 0.22) só suporta até Python 3.13. O `requirements.txt` deste projeto já usa `pydantic>=2.10` que tem wheels pré-compilados. Se ainda assim falhar:
-
-1. **Use Python 3.12 ou 3.13** (recomendado para servidores em produção).
-2. Ou force a flag de forward-compat do PyO3:
-   ```bat
-   set PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1
-   pip install -r requirements.txt
-   ```
+**E-mail não chega (Render free tier)**
+O Render bloqueia conexões SMTP. Por isso o projeto usa **Resend** (API HTTP). Confirme que `RESEND_API_KEY` está configurada nas variáveis de ambiente do serviço.
 
 ---
 
