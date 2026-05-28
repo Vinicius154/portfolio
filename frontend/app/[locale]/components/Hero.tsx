@@ -176,17 +176,30 @@ export default function Hero() {
           transition={{ duration: 1, delay: 0.1, ease: EASE }}
           className="relative mx-auto"
         >
-          <div className="relative">
-            {/* Anel orbital externo — rotação lenta */}
+          {/*
+            Área segura para os badges orbitais: padding generoso garante
+            que o overflow visível dos badges não cause scroll horizontal.
+            Em mobile os badges são ocultados, então o padding é removido.
+          */}
+          <div className="relative md:p-14">
+            {/* Foto */}
+            <div className="photo-ring relative h-[260px] w-[260px] md:h-[320px] md:w-[320px] overflow-hidden rounded-full border border-white/10 bg-bg-card shadow-glow-strong mx-auto">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/vb.jpeg"
+                alt="Vinicius Belchior"
+                className="h-full w-full object-cover"
+              />
+            </div>
+
+            {/* Anel orbital externo — visível só em desktop */}
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
-              className="absolute inset-0 m-auto"
+              className="absolute inset-0 m-auto hidden md:block"
               style={{
-                width: "calc(100% + 52px)",
-                height: "calc(100% + 52px)",
-                top: "-26px",
-                left: "-26px",
+                width: "calc(100% - 56px)",
+                height: "calc(100% - 56px)",
                 borderRadius: "50%",
                 border: "1px solid transparent",
                 borderTopColor: "rgba(59,130,246,0.35)",
@@ -195,31 +208,27 @@ export default function Hero() {
               }}
             />
 
-            {/* Anel orbital interno — rotação inversa mais rápida */}
+            {/* Anel orbital interno — visível só em desktop */}
             <motion.div
               animate={{ rotate: -360 }}
               transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-              className="absolute inset-0 m-auto"
+              className="absolute inset-0 m-auto hidden md:block"
               style={{
-                width: "calc(100% + 24px)",
-                height: "calc(100% + 24px)",
-                top: "-12px",
-                left: "-12px",
+                width: "calc(100% - 84px)",
+                height: "calc(100% - 84px)",
                 borderRadius: "50%",
                 border: "1px dashed rgba(99,102,241,0.22)",
               }}
             />
 
-            {/* Ponto orbital no anel externo */}
+            {/* Ponto luminoso no anel externo — visível só em desktop */}
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
-              className="absolute"
+              className="absolute inset-0 m-auto hidden md:block"
               style={{
-                width: "calc(100% + 52px)",
-                height: "calc(100% + 52px)",
-                top: "-26px",
-                left: "-26px",
+                width: "calc(100% - 56px)",
+                height: "calc(100% - 56px)",
                 borderRadius: "50%",
               }}
             >
@@ -234,17 +243,7 @@ export default function Hero() {
               />
             </motion.div>
 
-            {/* Foto */}
-            <div className="photo-ring relative h-[280px] w-[280px] md:h-[360px] md:w-[360px] overflow-hidden rounded-full border border-white/10 bg-bg-card shadow-glow-strong">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/vb.jpeg"
-                alt="Vinicius Belchior"
-                className="h-full w-full object-cover"
-              />
-            </div>
-
-            {/* Badge de stack — orbita ao redor da foto */}
+            {/* Badges orbitais — apenas em desktop (md+) */}
             <motion.div
               style={{
                 position: "absolute",
@@ -255,7 +254,7 @@ export default function Hero() {
                 marginLeft: "-60px",
                 marginTop: "-20px",
               }}
-              className="glass-strong px-3 py-2 text-[11px] font-medium text-white overflow-hidden min-w-[120px]"
+              className="glass-strong px-3 py-2 text-[11px] font-medium text-white overflow-hidden min-w-[120px] hidden md:block"
             >
               <AnimatePresence mode="wait">
                 <motion.span
@@ -272,7 +271,6 @@ export default function Hero() {
               </AnimatePresence>
             </motion.div>
 
-            {/* Badge de anos — orbita no lado oposto */}
             <motion.div
               style={{
                 position: "absolute",
@@ -283,7 +281,7 @@ export default function Hero() {
                 marginLeft: "-45px",
                 marginTop: "-20px",
               }}
-              className="glass-strong px-3 py-2 text-[11px] font-medium text-white overflow-hidden min-w-[90px]"
+              className="glass-strong px-3 py-2 text-[11px] font-medium text-white overflow-hidden min-w-[90px] hidden md:block"
             >
               <AnimatePresence mode="wait">
                 <motion.span
@@ -299,6 +297,40 @@ export default function Hero() {
                 </motion.span>
               </AnimatePresence>
             </motion.div>
+
+            {/* Badges estáticos em mobile — aparecem abaixo da foto */}
+            <div className="mt-6 flex justify-center gap-3 md:hidden">
+              <div className="glass-strong px-3 py-2 text-[11px] font-medium text-white">
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={`m-stack-${badgeIdx}`}
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.4 }}
+                    className="flex items-center gap-1.5"
+                  >
+                    <span className="font-mono text-royal-300">{`</>`}</span>
+                    {badgeIdx === 0 ? t("badgeStack") : t("badgeStack2")}
+                  </motion.span>
+                </AnimatePresence>
+              </div>
+              <div className="glass-strong px-3 py-2 text-[11px] font-medium text-white">
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={`m-anos-${badgeIdx}`}
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.4 }}
+                    className="flex items-center gap-1.5"
+                  >
+                    <span className="font-mono text-royal-300">@</span>
+                    {badgeIdx === 0 ? t("badgeYears") : t("badgeYears2")}
+                  </motion.span>
+                </AnimatePresence>
+              </div>
+            </div>
           </div>
         </motion.div>
       </motion.div>
