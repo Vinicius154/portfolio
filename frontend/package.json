@@ -1,0 +1,38 @@
+{
+  "name": "vinicius-belchior-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Portfólio profissional de Vinicius Belchior — Desenvolvedor Full Stack & Analista de Dados",
+  "author": "Vinicius Belchior <viniciusbelchior2017@gmail.com>",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "14.2.33",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "framer-motion": "11.11.17",
+    "lucide-react": "0.460.0",
+    "clsx": "2.1.1",
+    "next-intl": "3.26.3"
+  },
+  "devDependencies": {
+    "typescript": "5.6.3",
+    "@types/node": "20.17.6",
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "tailwindcss": "3.4.15",
+    "autoprefixer": "10.4.20",
+    "postcss": "8.4.49",
+    "eslint": "8.57.1",
+    "eslint-config-next": "14.2.33"
+  },
+  "overrides": {
+    "braces": "3.0.3",
+    "micromatch": "4.0.8",
+    "fast-glob": "3.3.2"
+  }
+}
