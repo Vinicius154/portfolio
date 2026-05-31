@@ -15,6 +15,7 @@ portfolio/
 ## Stack
 
 **Frontend**
+
 - Next.js 14 (App Router, RSC)
 - TypeScript
 - TailwindCSS
@@ -23,10 +24,11 @@ portfolio/
 - Lucide Icons
 
 **Backend**
+
 - Python 3.12+
 - FastAPI + Pydantic v2
-- Resend — envio de e-mail via API HTTP (sem SMTP)
-- Docker pronto para deploy
+- Resend - envio de e-mail via API HTTP (sem SMTP)
+- uv - gerenciamento de dependências
 
 ---
 
@@ -49,7 +51,7 @@ portfolio/
 
 - **Cor principal:** Azul royal escuro (`#1E40AF`)
 - **Acentos:** `#3B82F6`, `#6366F1`
-- **Estética:** dark-first, glass morphism, tipografia *Space Grotesk* (títulos) / *Inter* (corpo) / *JetBrains Mono* (código)
+- **Estética:** dark-first, glass morphism, tipografia _Space Grotesk_ (títulos) / _Inter_ (corpo) / _JetBrains Mono_ (código)
 
 ---
 
@@ -62,9 +64,11 @@ cd frontend
 npm install
 npm run dev
 ```
+
 Acesse `http://localhost:3000`.
 
 Para configurar a URL do backend, crie `frontend/.env.local`:
+
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
@@ -73,12 +77,10 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 
 ```powershell
 cd backend
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+uv sync
 Copy-Item .env.example .env
 # Edite .env com sua RESEND_API_KEY
-python main.py
+uv run python main.py
 ```
 
 API em `http://localhost:8000` — docs interativos em `/docs`.
@@ -87,20 +89,22 @@ API em `http://localhost:8000` — docs interativos em `/docs`.
 
 ## Deploy
 
-| Camada   | Plataforma recomendada                       |
-|----------|----------------------------------------------|
-| Frontend | **Vercel** (zero config para Next.js)        |
-| Backend  | **Render** (free tier, suporte a Python)     |
+| Camada   | Plataforma recomendada                   |
+| -------- | ---------------------------------------- |
+| Frontend | **Vercel** (zero config para Next.js)    |
+| Backend  | **Render** (free tier, suporte a Python) |
 
 ### Passos rápidos
 
 **Backend (Render):**
+
 1. New Web Service → conecta o repositório → Root Directory: `backend`
-2. Build: `pip install -r requirements.txt`
-3. Start: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+2. Build: `pip install uv && uv sync --frozen --no-dev`
+3. Start: `uv run uvicorn main:app --host 0.0.0.0 --port $PORT`
 4. Adiciona as variáveis: `RESEND_API_KEY`, `MAIL_FROM`, `MAIL_TO`, `ALLOWED_ORIGINS`
 
 **Frontend (Vercel):**
+
 1. New Project → importa o repositório → Root Directory: `frontend`
 2. Adiciona a variável: `NEXT_PUBLIC_API_URL=https://sua-api.onrender.com`
 
@@ -114,18 +118,12 @@ Após o deploy, atualize `ALLOWED_ORIGINS` no Render com a URL do Vercel.
 Instalação corrompida do next-intl. O projeto já usa `.includes()` como substituto — não é necessário nenhuma ação.
 
 **Frontend — node_modules corrompido**
+
 ```powershell
 cd frontend
 Remove-Item -Recurse -Force node_modules
 Remove-Item package-lock.json
 npm install
-```
-
-**Backend — falha ao compilar `pydantic-core` no Python 3.14**
-Use Python 3.12 ou 3.13. Se precisar do 3.14:
-```powershell
-$env:PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1
-pip install -r requirements.txt
 ```
 
 **E-mail não chega (Render free tier)**

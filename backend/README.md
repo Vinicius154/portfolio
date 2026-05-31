@@ -38,29 +38,27 @@ API em **FastAPI** que serve o formulário de contato do portfólio, enviando as
 
 ## Setup local
 
-> **Python recomendado:** 3.12 ou 3.13. O 3.14 funciona com este `requirements.txt`, mas é menos estável para deps com bindings Rust (pydantic-core).
+> **Pré-requisito:** [uv](https://docs.astral.sh/uv/getting-started/installation/) instalado (`pip install uv` ou via script oficial).
 
 **Windows (PowerShell):**
 ```powershell
 cd backend
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+uv sync
 Copy-Item .env.example .env
 # Edite .env com sua RESEND_API_KEY
-python main.py
+uv run python main.py
 ```
 
 **Linux/macOS:**
 ```bash
 cd backend
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+uv sync
 cp .env.example .env
 # Edite .env com sua RESEND_API_KEY
-python main.py
+uv run python main.py
 ```
+
+O `uv sync` cria o `.venv` e instala as dependências automaticamente a partir do `uv.lock`.
 
 API em `http://localhost:8000`, docs em `http://localhost:8000/docs`.
 
@@ -93,21 +91,11 @@ PORT=8000
 
 ---
 
-## Docker
-
-```bash
-cd backend
-docker build -t portfolio-api .
-docker run --env-file .env -p 8000:8000 portfolio-api
-```
-
----
-
 ## Deploy (Render)
 
 1. Crie um **Web Service** apontando para a pasta `backend/`.
-2. **Build Command:** `pip install -r requirements.txt`
-3. **Start Command:** `uvicorn main:app --host 0.0.0.0 --port $PORT`
+2. **Build Command:** `pip install uv && uv sync --frozen --no-dev`
+3. **Start Command:** `uv run uvicorn main:app --host 0.0.0.0 --port $PORT`
 4. Adicione as variáveis de ambiente na aba **Environment**.
 5. Copie a URL pública para o `NEXT_PUBLIC_API_URL` do frontend (Vercel).
 
@@ -118,8 +106,8 @@ docker run --env-file .env -p 8000:8000 portfolio-api
 ```
 backend/
 ├── main.py            # App FastAPI + integração Resend
-├── requirements.txt   # fastapi, uvicorn, pydantic[email], resend, python-dotenv
+├── pyproject.toml     # Dependências do projeto
+├── uv.lock            # Lockfile gerado pelo uv
 ├── .env.example       # Modelo de variáveis de ambiente
-├── Dockerfile
 └── README.md
 ```
